@@ -13,7 +13,7 @@ import static io.qameta.allure.Allure.step;
 public class BookСollectionTest extends TestBase {
 
     @Test
-    @DisplayName("Проверка запроса на авторизацию")
+    @DisplayName("Проверка добавления и удаления книг /одной книги из корзины")
     @WithLogin
     void addBookToCollection_withDelete_1_Book_BooksTest() {
         ApiHelper apiHelper = new ApiHelper();
