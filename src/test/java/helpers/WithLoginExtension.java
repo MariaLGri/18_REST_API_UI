@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.Cookie;
 import tests.BookСollectionTest;
-import tests.LoginTest;
+
 
 
 import static com.codeborne.selenide.Selenide.open;
