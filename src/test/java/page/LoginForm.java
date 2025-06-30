@@ -1,7 +1,7 @@
 package page;
 
 import com.codeborne.selenide.SelenideElement;
-import helpers.TestData;
+import tests.TestData;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;

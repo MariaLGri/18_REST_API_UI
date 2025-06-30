@@ -2,11 +2,13 @@ package models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    @AllArgsConstructor
-    @Data
-    public class AddBookRequestModel {
-        private String userId;
-        BookIsbnModel[] collectionOfIsbns;
-    }
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class AddBookRequestModel {
+    private String userId;
+    private BookIsbnModel[] collectionOfIsbns;
+}
 

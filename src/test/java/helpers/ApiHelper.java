@@ -1,22 +1,42 @@
 package helpers;
 
-import helpers.WithLoginExtension;
+import models.*;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebDriver;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
+import static tests.TestData.login;
+import static tests.TestData.password;
 import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
 import static specs.SpecsList.*;
 
 public class ApiHelper {
 
+    public class AccountApiRequests {
 
-// Удаляет все книги пользователя
+        public static LoginResponseModel loginRequest() {
+            LoginRequestModel authData = new LoginRequestModel(login, password);
+
+            return given(RequestSpec)
+                    .body(authData)
+                    .when()
+                    .post("/Account/v1/Login")
+                    .then()
+                    .spec(Response200Spec)
+                    .extract().as(LoginResponseModel.class);
+        }
+    }
+
+    // Удаляет все книги пользователя
     public static void deleteAllBooks() {
-        // Получаем данные из authResponse через jsonPath()
-        String userId = WithLoginExtension.authResponse.jsonPath().getString("userId");
-        String token = WithLoginExtension.authResponse.jsonPath().getString("token");
+        LoginResponseModel response = WithLoginExtension.getAuthData();
+        String userId = response.getUserId();
+        String token = response.getToken();
 
         given()
                 .spec(RequestSpec)
@@ -28,39 +48,58 @@ public class ApiHelper {
                 .spec(Response204Spec);
     }
 
-// Добавляет книгу по ISBN
-public static void addBook(String isbn) {
-    String bookData = format("{\"userId\":\"%s\",\"collectionOfIsbns\":[{\"isbn\":\"%s\"}]}",
-            WithLoginExtension.authResponse.path("userId"), isbn);
+    // Добавляет книгу по ISBN
+    public static void addBook(String isbn) {
+        LoginResponseModel authData = WithLoginExtension.getAuthData();
 
-    given(RequestSpec)
-            .header("Authorization", "Bearer " + WithLoginExtension.authResponse.path("token"))
-            .body(bookData)
-            .when()
-            .post("/BookStore/v1/Books")
-            .then()
-            .spec(Response201Spec);
-}
+        // Вариант 1: Через конструктор (если он есть)
+        AddBookRequestModel requestBody = new AddBookRequestModel(
+                authData.getUserId(),
+                new BookIsbnModel[] { new BookIsbnModel(isbn) }
+        );
+        // Отправляем запрос
+        given()
+                .spec(RequestSpec)
+                .header("Authorization", "Bearer " + authData.getToken())
+                .body(requestBody)
+                .when()
+                .post("/BookStore/v1/Books")
+                .then()
+                .spec(Response201Spec);
+    }
 
-// Удаляет конкретную книгу по ISBN
-public static void deleteBook(String isbn) {
-    String deleteBookData = format("{\"userId\":\"%s\",\"isbn\":\"%s\"}",
-            WithLoginExtension.authResponse.path("userId"), isbn);
+    // Удаляет конкретную книгу по ISBN
+    public static void deleteBook(String isbn) {
+        LoginResponseModel authData = WithLoginExtension.getAuthData();
 
-    given(RequestSpec)
-            .header("Authorization", "Bearer " + WithLoginExtension.authResponse.path("token"))
-            .body(deleteBookData)
-            .when()
-            .delete("/BookStore/v1/Book")
-            .then()
-            .spec(Response204Spec);
-}
+        // Формируем тело запроса через Map (альтернатива JSON-строке)
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("userId", authData.getUserId());
+        requestBody.put("isbn", isbn);
 
-// Обновляет куки после действий
-public static void refreshCookies() {
-    open("/favicon.ico");
-    getWebDriver().manage().addCookie(new Cookie("userID", WithLoginExtension.authResponse.path("userId")));
-    getWebDriver().manage().addCookie(new Cookie("expires", WithLoginExtension.authResponse.path("expires")));
-    getWebDriver().manage().addCookie(new Cookie("token", WithLoginExtension.authResponse.path("token")));
-}
+        given()
+                .spec(RequestSpec)
+                .header("Authorization", "Bearer " + authData.getToken())
+                .body(requestBody)
+                .when()
+                .delete("/BookStore/v1/Book")
+                .then()
+                .spec(Response204Spec);
+    }
+
+    // Обновляет куки после действий
+    public static void refreshCookies() {
+        LoginResponseModel authData = WithLoginExtension.getAuthData();
+
+        open("/favicon.ico");
+        WebDriver driver = getWebDriver();
+
+        // Устанавливаем куки
+        driver.manage().addCookie(new Cookie("userID", authData.getUserId()));
+        driver.manage().addCookie(new Cookie("token", authData.getToken()));
+
+        if (authData.getExpires() != null) {
+            driver.manage().addCookie(new Cookie("expires", authData.getExpires()));
+        }
+    }
 }
