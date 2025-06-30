@@ -45,6 +45,7 @@ public class WithLoginExtension implements BeforeEachCallback {
             getWebDriver().manage().addCookie(new Cookie("expires", authResponse.path("expires")));
             getWebDriver().manage().addCookie(new Cookie("token", authResponse.path("token")));
         }
+
     }
 }
 //public class WithLoginExtension implements BeforeEachCallback, AfterEachCallback {
