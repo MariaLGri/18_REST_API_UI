@@ -19,7 +19,6 @@ public class BookСollectionTest extends TestBase {
         ApiHelper apiHelper = new ApiHelper();
         LoginForm loginForm = new LoginForm();
         Basket basket = new Basket();
-        WithLoginExtension.AuthData auth = WithLoginExtension.getAuthData();
 
         String isbn = "9781449325862";
 
