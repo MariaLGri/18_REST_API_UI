@@ -41,7 +41,14 @@ dependencies {
     )
 
 }
-
+test {
+    systemProperties = [
+            "selenide.browser": "chrome",
+            "selenide.headless": "true",
+            "chromeoptions.args": "--disable-dev-shm-usage,--no-sandbox,--remote-allow-origins=*"
+    ]
+    maxParallelForks = 1 // Отключаем параллельный запуск
+}
 tasks.withType(Test) {
     useJUnitPlatform()
     systemProperties(System.getProperties())//для прокидывания переменных внутрь кода из вне (jenkins)
