@@ -19,10 +19,10 @@ public class BookСollectionTest extends TestBase {
         ApiHelper apiHelper = new ApiHelper();
         LoginForm loginForm = new LoginForm();
         Basket basket = new Basket();
-
+        WithLoginExtension.AuthData auth = WithLoginExtension.getAuthData();
 
         String isbn = "9781449325862";
-        assert WithLoginExtension.authResponse != null : "Авторизация не выполнена";
+
         step("Удаляем все имеющиеся в корзине книги", () -> apiHelper.deleteAllBooks());
 
         step("Добавляем книгу", () -> apiHelper.addBook(isbn));
