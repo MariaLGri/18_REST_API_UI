@@ -9,31 +9,45 @@ import static io.restassured.RestAssured.with;
 import static io.restassured.filter.log.LogDetail.BODY;
 import static io.restassured.filter.log.LogDetail.STATUS;
 import static io.restassured.http.ContentType.JSON;
+import static tests.TestData.token;
 
 
 public class SpecsList {
-    public static RequestSpecification RequestSpec = with()
-            .filter(withCustomTemplates())
-            .log().uri()
-            .log().method()
-            .log().body()
-            .contentType(JSON);
+        public static RequestSpecification authRequestSpec = with()
+                .filter(withCustomTemplates())
+                .log().uri()
+                .log().method()
+                .log().body()
+                .log().headers()
+                .contentType(JSON);
 
-    public static ResponseSpecification Response200Spec = new ResponseSpecBuilder()
-            .expectStatusCode(200)
-            .log(STATUS)
-            .log(BODY)
-            .build();
+        public static ResponseSpecification authResponseSpec(int expectedStatusCode) {
+            return new ResponseSpecBuilder()
+                    .log(STATUS)
+                    .log(BODY)
+                    .expectStatusCode(expectedStatusCode)
+                    .build();
+        }
 
-    public static ResponseSpecification Response204Spec = new ResponseSpecBuilder()
-            .expectStatusCode(204)
-            .log(STATUS)
-            .log(BODY)
-            .build();
 
-    public static ResponseSpecification Response201Spec = new ResponseSpecBuilder()
-            .expectStatusCode(201)
-            .log(STATUS)
-            .log(BODY)
-            .build();
-}
+        public static RequestSpecification bookRequestSpec(String token) {
+            return with()
+                    .filter(withCustomTemplates())
+                    .log().uri()
+                    .log().method()
+                    .log().body()
+                    .header("Authorization", "Bearer " + token)
+                    .log().headers()
+                    .contentType(JSON);
+        }
+
+        public static ResponseSpecification bookResponseSpec(int expectedStatusCode) {
+            return new ResponseSpecBuilder()
+                    .log(STATUS)
+                    .log(BODY)
+                    .expectStatusCode(expectedStatusCode)
+                    .build();
+        }
+    }
+
+

@@ -6,7 +6,7 @@ import tests.TestData;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;
 
-public class LoginForm {
+public class LoginPage {
 
     private final SelenideElement
 
@@ -16,7 +16,7 @@ public class LoginForm {
         userTitle.shouldHave(text(TestData.login));
 
     }
-    public LoginForm openProfilePage(){
+    public LoginPage openProfilePage(){
         open("/profile");
         return this;
     }
