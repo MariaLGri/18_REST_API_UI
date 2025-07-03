@@ -3,6 +3,10 @@ package tests;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
+import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,9 +30,24 @@ public class TestBase {
         Configuration.browserVersion = System.getProperty("browserVersion", "127.0");
         Configuration.pageLoadStrategy = "eager";
         Configuration.timeout = 10000;
+        Configuration.remote = String.format(
+                "https://%s:%s@%s/wd/hub",
+                System.getProperty("selenoidUserLogin", "user1"),
+                System.getProperty("selenoidUserPassword", "1234"),
+                System.getProperty("selenoidUrl", "selenoid.autotests.cloud")
+        );
+               DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability("selenoid:options", Map.<String, Object>of(
+                "enableVNC", true,
+                "enableVideo", true
+        ));
+        Configuration.browserCapabilities = capabilities;
 
-        // Настройки для Selenoid (только если указан selenoid_host)
-        configureSelenoidIfNeeded();
+        RestAssured.baseURI = "https://demoqa.com";
+        RestAssured.requestSpecification = new RequestSpecBuilder()
+                .setContentType(ContentType.JSON)
+                .log(LogDetail.ALL)
+                .build();
     }
 
     @BeforeEach
@@ -48,23 +67,4 @@ public class TestBase {
         closeWebDriver();
     }
 
-    private static void configureSelenoidIfNeeded() {
-        String selenoidHost = System.getProperty("selenoid_host");
-        if (selenoidHost != null && !selenoidHost.isEmpty()) {
-            String selenoidLogin = System.getProperty("selenoid_login", "user1");
-            String selenoidPassword = System.getProperty("selenoid_password", "1234");
-
-            Configuration.remote = String.format("https://%s:%s@%s/wd/hub",
-                    selenoidLogin,
-                    selenoidPassword,
-                    selenoidHost);
-
-            DesiredCapabilities capabilities = new DesiredCapabilities();
-            capabilities.setCapability("selenoid:options", Map.of(
-                    "enableVNC", true,
-                    "enableVideo", true
-            ));
-            Configuration.browserCapabilities = capabilities;
-        }
-    }
 }
