@@ -1,28 +1,33 @@
 package page;
 
+import com.codeborne.selenide.CollectionCondition;
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.*;
+import static tests.TestData.title;
 
 
 public class ProfilePage {
-    private SelenideElement
+    private final SelenideElement
+            booksTable = $(".ReactTable");
 
-            bookTitle = $(".ReactTable");
 
     @Step("Открываем страницу профиля")
     public ProfilePage openPage() {
         open("/profile");
         return this;
     }
+    @Step("Проверяем отсутствие книги с названием '{title}'")
+    public ProfilePage verifyBookNotPresentByTitle() {
+        // Проверяем что ни одна строка таблицы не содержит указанное название
+        booksTable.shouldNotBe(text(title));
 
-    @Step("Проверяем пустоту таблицы, без книг")
-    public ProfilePage checkTableEmpty() {
-        bookTitle.shouldBe(visible);
         return this;
     }
+
+
+
 }

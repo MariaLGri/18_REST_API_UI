@@ -1,4 +1,5 @@
 package tests;
+
 import helpers.ApiHelpersBasket;
 import helpers.WithLogin;
 
@@ -23,23 +24,25 @@ public class ShoppingCartsTest extends TestBase {
     void DeleteBookTest() {
         ProfilePage profilePage = new ProfilePage();
 
-        IsbnModel isbn = new IsbnModel(bookISBN);
-        List<IsbnModel> isbns = List.of(isbn);
+//        IsbnModel isbn = new IsbnModel();
+        List<IsbnModel> isbns = List.of(new IsbnModel(bookISBN_1),
+                new IsbnModel(bookISBN_2));
 
         AddBookRequestModel addBookData = new AddBookRequestModel(userId, isbns);
 
-        DeleteBookRequestModel deleteBookData = new DeleteBookRequestModel(userId, bookISBN);
+        DeleteBookRequestModel deleteBookData = new DeleteBookRequestModel(userId, bookISBN_1);
 
         step("Удаление всех имеющихся в корзине книг", ApiHelpersBasket::deleteAllBooks);
 
         step("Добавление книги в корзину", () ->
                 addBook(addBookData));
 
-        step("Удаление добавленной книги из корзины", () ->{
-                        ApiHelpersBasket.deleteBook(deleteBookData);
+        step("Удаление одной из добавленных книги из корзины", () -> {
+            ApiHelpersBasket.deleteBook(deleteBookData);
         });
 
+
         profilePage.openPage()
-                .checkTableEmpty();
+                .verifyBookNotPresentByTitle();
     }
 }
