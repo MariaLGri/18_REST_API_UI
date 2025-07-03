@@ -15,7 +15,7 @@ import java.util.List;
 import static com.codeborne.selenide.logevents.SelenideLogger.step;
 import static helpers.ApiHelpersBasket.*;
 import static tests.TestData.*;
-
+@DisplayName("Тесты на удаление книг")
 public class ShoppingCartsTest extends TestBase {
 
     @DisplayName("Удаление книги из корзины")
