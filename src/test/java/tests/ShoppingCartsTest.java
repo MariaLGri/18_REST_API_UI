@@ -32,7 +32,7 @@ public class ShoppingCartsTest extends TestBase {
 
         DeleteBookRequestModel deleteBookData = new DeleteBookRequestModel(userId, bookISBN_1);
 
-        step("Удаление всех имеющихся в корзине книг", ApiHelpersBasket::deleteAllBooks);
+        step("Удаление всех имеющихся в корзине книг ", ApiHelpersBasket::deleteAllBooks);
 
         step("Добавление книги в корзину", () ->
                 addBook(addBookData));
