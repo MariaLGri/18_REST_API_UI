@@ -37,7 +37,7 @@ public class ShoppingCartsTest extends TestBase {
         step("Добавление книги в корзину", () ->
                 addBook(addBookData));
 
-        step("Удаление одной из добавленных книги из корзины", () -> {
+        step("Удаление одной из добавленных книги из корзины ", () -> {
             ApiHelpersBasket.deleteBook(deleteBookData);
         });
 
