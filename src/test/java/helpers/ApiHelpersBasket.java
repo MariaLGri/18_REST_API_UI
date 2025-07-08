@@ -1,10 +1,8 @@
 package helpers;
 
-import io.restassured.RestAssured;
-import models.*;
+import models.AddBookRequestModel;
+import models.DeleteBookRequestModel;
 import tests.TestData;
-
-import static com.codeborne.selenide.Selenide.open;
 import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
 import static specs.SpecsList.*;
@@ -15,16 +13,16 @@ public class ApiHelpersBasket {
     public static void deleteAllBooks() {
 
         given()
-                .spec(bookRequestSpec(token))
+                .spec(RequestSpec(token))
                 .when()
-                .delete(BookStoreBooks + "?UserId=" + userId)
+                .delete(BookStoreBooks + "?UserId=" + TestData.userId)
                 .then()
                 .spec(bookResponseSpec(204));
     }
 
     public static void addBook(AddBookRequestModel addBookData) {
 
-        given(bookRequestSpec(token))
+        given(RequestSpec(token))
                 .body(addBookData)
                 .when()
                 .post(BookStoreBooks)
@@ -33,7 +31,7 @@ public class ApiHelpersBasket {
     }
 
     public static void deleteBook(DeleteBookRequestModel deleteBookData) {
-        given(bookRequestSpec(token))
+        given(RequestSpec(token))
                 .baseUri(baseURI)
                 .body(deleteBookData)
                 .when()

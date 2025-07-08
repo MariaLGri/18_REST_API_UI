@@ -1,7 +1,6 @@
-package page;
+package pages;
 
-import com.codeborne.selenide.CollectionCondition;
-import com.codeborne.selenide.ElementsCollection;
+
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
@@ -20,14 +19,13 @@ public class ProfilePage {
         open("/profile");
         return this;
     }
+
     @Step("Проверяем отсутствие книги с названием '{title}'")
-    public ProfilePage verifyBookNotPresentByTitle() {
+    public ProfilePage verifyBookNotPresentByTitle(String title) {
         // Проверяем что ни одна строка таблицы не содержит указанное название
         booksTable.shouldNotBe(text(title));
-
         return this;
     }
-
 
 
 }

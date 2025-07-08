@@ -6,6 +6,7 @@ HELP.md
 build/
 ### IntelliJ IDEA ###
 .idea
+.env
 *.iws
 *.iml
 *.ipr

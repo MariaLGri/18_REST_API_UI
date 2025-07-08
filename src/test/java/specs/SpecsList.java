@@ -9,17 +9,9 @@ import static io.restassured.RestAssured.with;
 import static io.restassured.filter.log.LogDetail.BODY;
 import static io.restassured.filter.log.LogDetail.STATUS;
 import static io.restassured.http.ContentType.JSON;
-import static tests.TestData.token;
 
 
 public class SpecsList {
-        public static RequestSpecification authRequestSpec = with()
-                .filter(withCustomTemplates())
-                .log().uri()
-                .log().method()
-                .log().body()
-                .log().headers()
-                .contentType(JSON);
 
         public static ResponseSpecification authResponseSpec(int expectedStatusCode) {
             return new ResponseSpecBuilder()
@@ -30,7 +22,7 @@ public class SpecsList {
         }
 
 
-        public static RequestSpecification bookRequestSpec(String token) {
+        public static RequestSpecification RequestSpec(String token) {
             return with()
                     .filter(withCustomTemplates())
                     .log().uri()
